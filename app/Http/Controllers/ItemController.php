@@ -13,6 +13,11 @@ class ItemController extends Controller
         return view('item.index', compact('items'));
     }
 
+    public function create()
+    {
+        return view('item.create');
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -22,7 +27,13 @@ class ItemController extends Controller
         ]);
 
         Item::create($validated);
-        return redirect()->back()->with('success', 'Item berhasil ditambahkan!');
+
+        return redirect()->route('item.index')->with('success', 'Item berhasil ditambahkan!');
+    }
+
+    public function edit(Item $item)
+    {
+        return view('item.edit', compact('item'));
     }
 
     public function update(Request $request, Item $item)
@@ -34,12 +45,13 @@ class ItemController extends Controller
         ]);
 
         $item->update($validated);
-        return redirect()->back()->with('success', 'Item berhasil diperbarui!');
+
+        return redirect()->route('item.index')->with('success', 'Item berhasil diperbarui!');
     }
 
     public function destroy(Item $item)
     {
         $item->delete();
-        return redirect()->back()->with('success', 'Item berhasil dihapus!');
+        return redirect()->route('item.index')->with('success', 'Item berhasil dihapus!');
     }
 }

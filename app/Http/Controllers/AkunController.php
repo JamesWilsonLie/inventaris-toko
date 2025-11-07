@@ -10,10 +10,8 @@ class AkunController extends Controller
 {
     public function index(Request $request)
     {
-        // ambil semua akun + relasi game
         $query = Akun::with('game');
 
-        // filter opsional
         if ($request->has('jenis')) {
             $query->where('jenis', $request->jenis);
         }
@@ -28,10 +26,10 @@ class AkunController extends Controller
         return view('akun.index', compact('akun', 'games'));
     }
 
-    public function show($id)
+    public function create()
     {
-        $akun = Akun::with(['game', 'items'])->findOrFail($id);
-        return view('akun.show', compact('akun'));
+        $games = Game::all();
+        return view('akun.create', compact('games'));
     }
 
     public function store(Request $request)
@@ -47,7 +45,37 @@ class AkunController extends Controller
         ]);
 
         Akun::create($validated);
+
         return redirect()->route('akun.index')->with('success', 'Akun berhasil ditambahkan!');
+    }
+
+    public function show($id)
+    {
+        $akun = Akun::with(['game', 'items'])->findOrFail($id);
+        return view('akun.show', compact('akun'));
+    }
+
+    public function edit(Akun $akun)
+    {
+        $games = Game::all();
+        return view('akun.edit', compact('akun', 'games'));
+    }
+
+    public function update(Request $request, Akun $akun)
+    {
+        $validated = $request->validate([
+            'game_id' => 'required|exists:games,id',
+            'nama' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'note' => 'nullable|string',
+            'jenis' => 'required|in:personal,reseller',
+            'harga_beli' => 'nullable|numeric',
+            'harga_jual' => 'nullable|numeric',
+        ]);
+
+        $akun->update($validated);
+
+        return redirect()->route('akun.index')->with('success', 'Akun berhasil diperbarui!');
     }
 
     public function destroy(Akun $akun)

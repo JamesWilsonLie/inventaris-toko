@@ -13,6 +13,11 @@ class GameController extends Controller
         return view('games.index', compact('games'));
     }
 
+    public function create()
+    {
+        return view('games.create');
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -21,12 +26,28 @@ class GameController extends Controller
 
         Game::create($validated);
 
-        return redirect()->back()->with('success', 'Game berhasil ditambahkan!');
+        return redirect()->route('games.index')->with('success', 'Game berhasil ditambahkan!');
+    }
+
+    public function edit(Game $game)
+    {
+        return view('games.edit', compact('game'));
+    }
+
+    public function update(Request $request, Game $game)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255|unique:games,nama,' . $game->id,
+        ]);
+
+        $game->update($validated);
+
+        return redirect()->route('games.index')->with('success', 'Game berhasil diperbarui!');
     }
 
     public function destroy(Game $game)
     {
         $game->delete();
-        return redirect()->back()->with('success', 'Game berhasil dihapus!');
+        return redirect()->route('games.index')->with('success', 'Game berhasil dihapus!');
     }
 }
