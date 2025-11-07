@@ -9,11 +9,9 @@ use App\Http\Controllers\{
     AkunItemController
 };
 
-Route::get('/', function () {
-    return view('index');
-})->middleware('auth')->name('index');
-
 Route::middleware('auth')->group(function () {
+
+    Route::get('/', [AkunController::class, 'home'])->name('index');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Akun;
 use App\Models\Game;
+use App\Models\Item;
 use Illuminate\Http\Request;
 
 class AkunController extends Controller
@@ -25,6 +26,31 @@ class AkunController extends Controller
 
         return view('akun.index', compact('akun', 'games'));
     }
+
+    public function home()
+    {
+        // Ambil semua akun reseller
+        $resellerAccounts = Akun::where('jenis', 'reseller')->get();
+
+        // Label untuk grafik: nama akun
+        $labels = $resellerAccounts->pluck('nama')->toArray();
+
+        // Dataset: estimasi keuntungan = harga_jual - harga_beli
+        $profit = $resellerAccounts->map(function($akun){
+            return $akun->harga_jual - $akun->harga_beli;
+        })->toArray();
+
+        // Dataset tambahan: harga_beli dan harga_jual (opsional untuk perbandingan)
+        $hargaBeli = $resellerAccounts->pluck('harga_beli')->toArray();
+        $hargaJual = $resellerAccounts->pluck('harga_jual')->toArray();
+
+        // Total tahunan dan bulanan
+        $totalProfit = array_sum($profit);
+        $monthlyProfit = round($totalProfit / 12, 2); // estimasi per bulan
+
+        return view('index', compact('labels', 'profit', 'hargaBeli', 'hargaJual', 'totalProfit', 'monthlyProfit'));
+    }
+
 
     public function create()
     {
@@ -51,9 +77,12 @@ class AkunController extends Controller
 
     public function show($id)
     {
-        $akun = Akun::with(['game', 'items'])->findOrFail($id);
-        return view('akun.show', compact('akun'));
+        $akun = Akun::with('items')->findOrFail($id);
+        $allItems = Item::orderBy('nama')->get(); // untuk dropdown
+
+        return view('akun.show', compact('akun', 'allItems'));
     }
+
 
     public function edit(Akun $akun)
     {

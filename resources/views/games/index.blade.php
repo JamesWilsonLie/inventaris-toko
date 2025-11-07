@@ -8,14 +8,14 @@
     <div class="card w-100">
       <div class="card-body p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h5 class="card-title fw-semibold mb-0">Daftar Game</h5>
+          <h5 class="card-title fw-semibold mb-0">List Game</h5>
           <a href="{{ route('games.create') }}" class="btn btn-primary btn-sm">
             <i class="ti ti-plus"></i> Tambah Game
           </a>
         </div>
 
         <div class="table-responsive">
-          <table class="table text-nowrap mb-0 align-middle">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead class="text-dark fs-4">
               <tr>
                 <th><h6 class="fw-semibold mb-0">#</h6></th>

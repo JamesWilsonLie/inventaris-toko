@@ -6,6 +6,8 @@
   <title>@yield('title', 'Dashboard | Sistem Inventaris')</title>
   <link rel="shortcut icon" type="image/png" href="{{ asset('backend/assets/images/logos/favicon.png') }}" />
   <link rel="stylesheet" href="{{ asset('backend/assets/css/styles.min.css') }}" />
+
+  <link href="{{ asset('graph/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 </head>
 
 <body>
@@ -37,5 +39,12 @@
   <script src="{{ asset('backend/assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
   <script src="{{ asset('backend/assets/libs/simplebar/dist/simplebar.js') }}"></script>
   <script src="{{ asset('backend/assets/js/dashboard.js') }}"></script>
+  
+  <script src="{{asset('graph/vendor/chart.js/Chart.min.js')}}"></script>
+  <script src="{{asset('graph/vendor/datatables/jquery.dataTables.min.js')}}"></script>
+  <script src="{{asset('graph/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+  <script src="{{asset('graph/js/demo/chart-area-demo.js')}}"></script>
+  <script src="{{asset('graph/js/demo/chart-pie-demo.js')}}"></script>
+  <script src="{{asset('graph/js/demo/datatables-demo.js')}}"></script>
 </body>
 </html>

@@ -3,21 +3,31 @@
 @section('title', 'Games | Tambah')
 
 @section('content')
-<div class="container">
-    <h3>Tambah Game Baru</h3>
+<div class="row">
+  <div class="col-lg-12 d-flex align-items-stretch">
+    <div class="card w-100">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="container">
+                <h3>Tambah Game Baru</h3>
 
-    <form action="{{ route('games.store') }}" method="POST">
-        @csrf
-        <div class="mb-3">
-            <label for="nama" class="form-label">Nama Game</label>
-            <input type="text" name="nama" id="nama" class="form-control" value="{{ old('nama') }}" required>
-            @error('nama')
-                <div class="text-danger mt-1">{{ $message }}</div>
-            @enderror
+                <form action="{{ route('games.store') }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="nama" class="form-label">Nama Game</label>
+                        <input type="text" name="nama" id="nama" class="form-control" value="{{ old('nama') }}" required>
+                        @error('nama')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a href="{{ route('games.index') }}" class="btn btn-secondary">Batal</a>
+                </form>
+            </div>
         </div>
-
-        <button type="submit" class="btn btn-primary">Simpan</button>
-        <a href="{{ route('games.index') }}" class="btn btn-secondary">Batal</a>
-    </form>
+      </div>
+    </div>
+  </div>
 </div>
 @endsection
