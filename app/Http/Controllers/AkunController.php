@@ -29,26 +29,36 @@ class AkunController extends Controller
 
     public function home()
     {
-        // Ambil semua akun reseller
         $resellerAccounts = Akun::where('jenis', 'reseller')->get();
-
-        // Label untuk grafik: nama akun
         $labels = $resellerAccounts->pluck('nama')->toArray();
 
-        // Dataset: estimasi keuntungan = harga_jual - harga_beli
         $profit = $resellerAccounts->map(function($akun){
             return $akun->harga_jual - $akun->harga_beli;
         })->toArray();
 
-        // Dataset tambahan: harga_beli dan harga_jual (opsional untuk perbandingan)
         $hargaBeli = $resellerAccounts->pluck('harga_beli')->toArray();
         $hargaJual = $resellerAccounts->pluck('harga_jual')->toArray();
 
-        // Total tahunan dan bulanan
         $totalProfit = array_sum($profit);
-        $monthlyProfit = round($totalProfit / 12, 2); // estimasi per bulan
+        $monthlyProfit = round($totalProfit / 12, 2);
 
-        return view('index', compact('labels', 'profit', 'hargaBeli', 'hargaJual', 'totalProfit', 'monthlyProfit'));
+        $personalCount = Akun::where('jenis', 'personal')->count();
+        $resellerCount = Akun::where('jenis', 'reseller')->count();
+        $itemCount = Item::count();
+        $gameCount = Game::count();
+
+        return view('index', compact(
+            'labels',
+            'profit',
+            'hargaBeli',
+            'hargaJual',
+            'totalProfit',
+            'monthlyProfit',
+            'personalCount',
+            'resellerCount',
+            'itemCount',
+            'gameCount'
+        ));
     }
 
 
@@ -77,12 +87,18 @@ class AkunController extends Controller
 
     public function show($id)
     {
-        $akun = Akun::with('items')->findOrFail($id);
-        $allItems = Item::orderBy('nama')->get(); // untuk dropdown
+        $akun = Akun::with('items', 'game')->findOrFail($id);
+        $allItems = Item::orderBy('nama')->get();
 
-        return view('akun.show', compact('akun', 'allItems'));
+        $hargaBeli = $akun->harga_beli ?? 0;
+        $hargaJual = $akun->harga_jual ?? 0;
+        $profit = $hargaJual - $hargaBeli;
+
+        $labels = ['Harga Beli', 'Harga Jual', 'Keuntungan'];
+        $values = [$hargaBeli, $hargaJual, $profit];
+
+        return view('akun.show', compact('akun', 'allItems', 'labels', 'values', 'profit'));
     }
-
 
     public function edit(Akun $akun)
     {

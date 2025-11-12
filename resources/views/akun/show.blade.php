@@ -21,14 +21,23 @@
                     <h6 class="fw-semibold">Nama Akun:</h6>
                     <p>{{ $akun->nama }}</p>
 
-                    <h6 class="fw-semibold">Jenis:</h6>
-                    <p>
+                    <h6 class="fw-semibold">Jenis: 
                         <span class="badge 
                             @if($akun->jenis == 'personal') bg-primary 
                             @else bg-success @endif 
                             rounded-3 fw-semibold">
                             {{ ucfirst($akun->jenis) }}
                         </span>
+                    </h6>
+
+                    <h6 class="fw-semibold">Deskripsi:</h6>
+                    <p>{{ $akun->deskripsi }}</p>
+                    <h6 class="fw-semibold">Catatan:</h6>
+                    <p>{{ $akun->note }}</p>
+                    <p><strong>Harga Beli:</strong> Rp {{ number_format($akun->harga_beli, 0, ',', '.') }}</p>
+                    <p><strong>Harga Jual:</strong> Rp {{ number_format($akun->harga_jual, 0, ',', '.') }}</p>
+                    <p><strong>Estimasi Keuntungan:</strong> 
+                        <span class="fw-bold text-success">Rp {{ number_format($profit, 0, ',', '.') }}</span>
                     </p>
                 </div>
 
@@ -37,7 +46,6 @@
                 <div class="mb-4">
                     <h5 class="card-title fw-semibold">Daftar Item</h5>
 
-                    {{-- Form tambah item --}}
                     <form action="{{ route('akun_item.store', $akun->id) }}" method="POST" class="mb-3 d-flex gap-2 align-items-center">
                         @csrf
                         <select name="item_id" class="form-control" required>
@@ -76,12 +84,10 @@
                                             <td>{{ number_format($item->pivot->harga_jual ?? 0,0,',','.') }}</td>
                                             <td>{{ $item->pivot->note }}</td>
                                             <td class="d-flex gap-1">
-                                                {{-- Edit Item --}}
                                                 <a href="{{ route('akun_item.edit', [$akun->id, $item->id]) }}" class="btn btn-sm btn-warning">
                                                     <i class="ti ti-pencil"></i>
                                                 </a>
                                                 
-                                                {{-- Hapus Item --}}
                                                 <form action="{{ route('akun_item.destroy', [$akun->id, $item->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus item ini?')">
                                                     @csrf
                                                     @method('DELETE')
@@ -89,6 +95,7 @@
                                                         <i class="ti ti-trash"></i>
                                                     </button>
                                                 </form>
+
                                             </td>
                                         </tr>
                                     @endforeach
@@ -97,9 +104,79 @@
                         </div>
                     @endif
 
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <h5 class="fw-semibold mb-3">Grafik Estimasi Keuntungan</h5>
+                            <canvas id="akunProfitChart" height="120"></canvas>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('akunProfitChart').getContext('2d');
+    const akunProfitChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode($labels) !!},
+            datasets: [{
+                label: 'Nilai (Rp)',
+                data: {!! json_encode($values) !!},
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(54, 162, 235, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Perbandingan Harga & Keuntungan',
+                    font: { size: 16 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw || 0;
+                            return 'Rp. ' + value.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + value.toLocaleString('id-ID');
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Rupiah (Rp)',
+                        font: { size: 12 }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
 @endsection

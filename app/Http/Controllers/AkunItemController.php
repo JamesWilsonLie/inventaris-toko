@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class AkunItemController extends Controller
 {
-    // Tambah item ke akun
     public function store(Request $request, $akun_id)
     {
         $validated = $request->validate([
@@ -25,7 +24,6 @@ class AkunItemController extends Controller
             ->with('success', 'Item berhasil ditambahkan ke akun!');
     }
 
-    // Edit item akun
     public function edit($akun_id, $item_id)
     {
         $akun = Akun::findOrFail($akun_id);
@@ -35,7 +33,6 @@ class AkunItemController extends Controller
         return view('akun.edit2', compact('akun', 'item', 'akunItem'));
     }
 
-    // Update item akun
     public function update(Request $request, $akun_id, $item_id)
     {
         $validated = $request->validate([
@@ -51,12 +48,12 @@ class AkunItemController extends Controller
             ->with('success', 'Item berhasil diperbarui!');
     }
 
-    // Hapus item dari akun
-    public function destroy($akun_id, AkunItem $akunItem)
+    public function destroy($akun_id, $item_id)
     {
+        $akunItem = AkunItem::where('akun_id', $akun_id)->where('item_id', $item_id)->firstOrFail();
         $akunItem->delete();
 
-        return redirect()->route('akun.show', $akun_id)
-            ->with('success', 'Item berhasil dihapus dari akun!');
+        return redirect()->route('akun.show', $akun_id)->with('success', 'Item berhasil dihapus dari akun!');
     }
+
 }

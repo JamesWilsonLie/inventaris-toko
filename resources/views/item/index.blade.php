@@ -14,7 +14,6 @@
           </a>
         </div>
 
-        {{-- Alert pesan sukses --}}
         @if(session('success'))
           <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -70,7 +69,6 @@
           </table>
         </div>
 
-        {{-- Pagination --}}
         <div class="mt-3">
           {{ $items->links() }}
         </div>

@@ -25,7 +25,6 @@ class Akun extends Model
         return $this->belongsTo(Game::class, 'game_id');
     }
 
-    // Relasi ke Item (many-to-many melalui tabel akun_item)
     public function items()
     {
         return $this->belongsToMany(Item::class, 'akun_item', 'akun_id', 'item_id')
@@ -33,9 +32,6 @@ class Akun extends Model
                     ->withTimestamps();
     }
 
-    // ===== Helper / fungsi perhitungan =====
-
-    // Estimasi total nilai item untuk akun personal
     public function totalNilaiItem()
     {
         return $this->items->sum(function ($item) {
@@ -43,7 +39,6 @@ class Akun extends Model
         });
     }
 
-    // Estimasi keuntungan (khusus untuk akun reseller)
     public function estimasiKeuntungan()
     {
         if ($this->jenis !== 'reseller' || $this->harga_beli === null || $this->harga_jual === null) {
