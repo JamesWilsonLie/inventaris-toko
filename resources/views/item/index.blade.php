@@ -35,9 +35,9 @@
             <tbody>
               @forelse($items as $index => $item)
                 <tr>
-                  <td><h6 class="fw-semibold mb-0">{{ $items->firstItem() + $index }}</h6></td>
+                  <td><h6 class="fw-semibold mb-0">{{ $index + 1 }}</h6></td>
                   <td><p class="mb-0 fw-normal">{{ $item->nama }}</p></td>
-                  <td>
+                  <td data-sort="{{ $item->harga_pasar ?? 0 }}">
                     <h6 class="fw-semibold mb-0 fs-4">
                       Rp. {{ $item->harga_pasar ? number_format($item->harga_pasar, 0, ',', '.') : '-' }}
                     </h6>
@@ -67,10 +67,6 @@
               @endforelse
             </tbody>
           </table>
-        </div>
-
-        <div class="mt-3">
-          {{ $items->links() }}
         </div>
       </div>
     </div>

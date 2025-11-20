@@ -21,7 +21,7 @@ class AkunController extends Controller
             $query->where('game_id', $request->game_id);
         }
 
-        $akun = $query->orderBy('id', 'desc')->paginate(10);
+        $akun = $query->orderBy('id', 'desc')->get();
         $games = Game::all();
 
         return view('akun.index', compact('akun', 'games'));

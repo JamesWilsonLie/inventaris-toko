@@ -48,8 +48,14 @@
                       {{ ucfirst($a->jenis) }}
                     </span>
                   </td>
-                  <td><h6 class="fw-semibold mb-0 fs-4">Rp. {{ number_format($a->harga_beli, 0, ',', '.') }}</h6></td>
-                  <td><h6 class="fw-semibold mb-0 fs-4">Rp. {{ number_format($a->harga_jual, 0, ',', '.') }}</h6></td>
+                  <td data-sort="{{ $a->harga_beli }}">
+                      <h6 class="fw-semibold mb-0 fs-4">Rp. {{ number_format($a->harga_beli, 0, ',', '.') }}</h6>
+                  </td>
+
+                  <td data-sort="{{ $a->harga_jual }}">
+                      <h6 class="fw-semibold mb-0 fs-4">Rp. {{ number_format($a->harga_jual, 0, ',', '.') }}</h6>
+                  </td>
+
                   <td>
                     <div class="d-flex gap-2">
                       <a href="{{ route('akun.show', $a->id) }}" class="btn btn-sm btn-info text-white">
